@@ -1,3 +1,4 @@
 # internet-de-las-cosas
 
-En la carpeta 1 se encuentra la primera actividad
+Hay 2 carpetas con cada actividad, primera actividad y segunda actividad
+
