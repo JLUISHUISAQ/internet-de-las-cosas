@@ -1,0 +1,30 @@
+[
+    {
+        "id": "ccead927a3f4dd0c",
+        "type": "mysql",
+        "z": "6ce487a2ac5beb29",
+        "mydb": "8d7f04be39b50af9",
+        "name": "",
+        "x": 480,
+        "y": 280,
+        "wires": [
+            [
+                "3f8d779408d28ac9"
+            ]
+        ]
+    },
+    {
+        "id": "8d7f04be39b50af9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "tSerlesDB",
+        "tz": "",
+        "charset": "UTF8",
+        "credentials": {
+            "user": "",
+            "password": ""
+        }
+    }
+]
