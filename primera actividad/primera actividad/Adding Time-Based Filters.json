@@ -1,0 +1,176 @@
+[
+    {
+        "id": "e6986db66f44a356",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "040a07fa784b789e",
+        "type": "mysql",
+        "z": "e6986db66f44a356",
+        "mydb": "8d7f04be39b50af9",
+        "name": "",
+        "x": 680,
+        "y": 240,
+        "wires": [
+            [
+                "5a8fcc05952bbb28"
+            ]
+        ]
+    },
+    {
+        "id": "2d53f06e0d91daf7",
+        "type": "http in",
+        "z": "e6986db66f44a356",
+        "name": "",
+        "url": "/get/:topic/before/:time/last/:count.",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "f3996cfb64a326b7"
+            ]
+        ]
+    },
+    {
+        "id": "3da3d638bd01e621",
+        "type": "function",
+        "z": "e6986db66f44a356",
+        "name": "Create 'DURING' query",
+        "func": "// Create 'DURING' query\n// if no authentication filter defined or available\n// set the default value as 1\nif(!msg.req.authFilter)\n msg.req.authFilter = 1;\n// wildcard used for API query is * and this needs to be converted into SQL wildcard character %\nmsg.topic = \"SELECT id,topic,payload,timestamp\" +\n            \" FROM thingData WHERE\" +\n            \" topic LIKE '\" + msg.req.params.topic.\n            replace(/\\*/g, \"%\") + \"'\" +\n            \" AND\" +\n            \" timestamp >= '\" + msg.req.params.start + \"'\" +\n            \" AND\" +\n            \" timestamp <='\" + msg.req.params.end + \"'\" +\n            \" AND deleted=0\" +\n            \" AND (\" + msg.req.authFilter + \")\" +\n            \" ORDER BY ID DESC\" +\n            \" LIMIT \" + msg.req.params.count + \";\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 320,
+        "wires": [
+            [
+                "040a07fa784b789e"
+            ]
+        ]
+    },
+    {
+        "id": "5a8fcc05952bbb28",
+        "type": "function",
+        "z": "e6986db66f44a356",
+        "name": "prepare response",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 240,
+        "wires": [
+            [
+                "e091211b88540a00"
+            ]
+        ]
+    },
+    {
+        "id": "e091211b88540a00",
+        "type": "http response",
+        "z": "e6986db66f44a356",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1010,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "072e1ab8a6f8334e",
+        "type": "function",
+        "z": "e6986db66f44a356",
+        "name": " Create 'AFTER' query",
+        "func": "// Create 'AFTER' query\n// if no authentication filter defined or available\n// set the default value as 1\nif(!msg.req.authFilter)\n msg.req.authFilter = 1;\n// wildcard used for API query is * and this needs to be converted into SQL wildcard character %\nmsg.topic = \"SELECT id,topic,payload,timestamp\" +\n            \" FROM thingData WHERE\" +\n            \" topic LIKE '\" + msg.req.params.topic.\n            replace(/\\*/g, \"%\") + \"'\" +\n            \" AND\" +\n            \" timestamp >= '\" + msg.req.params.time + \"'\" +\n            \" AND deleted=0\" +\n            \" AND (\" + msg.req.authFilter + \")\" +\n            \" ORDER BY ID DESC\" +\n            \" LIMIT \" + msg.req.params.count + \";\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 160,
+        "wires": [
+            [
+                "040a07fa784b789e"
+            ]
+        ]
+    },
+    {
+        "id": "f3996cfb64a326b7",
+        "type": "function",
+        "z": "e6986db66f44a356",
+        "name": "Create 'BEFORE' query",
+        "func": "// Create 'BEFORE' query\n// if no authentication filter defined or available\n// set the default value as 1\nif(!msg.req.authFilter)\n msg.req.authFilter = 1;\n// wildcard used for API query is * and this needs to be converted into SQL wildcard character %\nmsg.topic = \"SELECT id,topic,payload,timestamp\" +\n \" FROM thingData WHERE\" +\n \" topic LIKE '\" + msg.req.params.topic.\nreplace(/\\*/g, \"%\") + \"'\" +\n \" AND\" +\n \" timestamp <= '\" + msg.req.params.time + \"'\" +\n \" AND deleted=0\" +\n \" AND (\" + msg.req.authFilter + \")\" +\n \" ORDER BY ID DESC\" +\n \" LIMIT \" + msg.req.params.count + \";\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 240,
+        "wires": [
+            [
+                "040a07fa784b789e"
+            ]
+        ]
+    },
+    {
+        "id": "8e1ed12b0fb0d756",
+        "type": "http in",
+        "z": "e6986db66f44a356",
+        "name": "",
+        "url": "/get/:topic/after/:time/last/:count",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "072e1ab8a6f8334e"
+            ]
+        ]
+    },
+    {
+        "id": "94f31ec1003535b9",
+        "type": "http in",
+        "z": "e6986db66f44a356",
+        "name": "",
+        "url": "/get/:topic/during/:start/:end/last/:count",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 320,
+        "wires": [
+            [
+                "3da3d638bd01e621"
+            ]
+        ]
+    },
+    {
+        "id": "8d7f04be39b50af9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "tSerlesDB",
+        "tz": "",
+        "charset": "UTF8",
+        "credentials": {
+            "user": "",
+            "password": ""
+        }
+    }
+]
